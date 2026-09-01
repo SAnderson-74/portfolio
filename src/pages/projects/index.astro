@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Projects — Scott Anderson</title>
+  </head>
+  <body>
+    <h1>Projects</h1>
+    {projects.map((project) => (
+      <article>
+        <h2><a href={`/projects/${project.id}/`}>{project.data.title}</a></h2>
+        <p>{project.data.summary}</p>
+        <p>{project.data.stack.join(' · ')}</p>
+      </article>
+    ))}
+  </body>
+</html>

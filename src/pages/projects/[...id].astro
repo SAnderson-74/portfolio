@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+type Props = { project: CollectionEntry<'projects'> };
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{project.data.title} — Scott Anderson</title>
+    <meta name="description" content={project.data.summary} />
+  </head>
+  <body>
+    <a href="/projects/">← Projects</a>
+    <h1>{project.data.title}</h1>
+    <p>{project.data.stack.join(' · ')}</p>
+    <Content />
+    <a href="/projects/">← Projects</a>
+  </body>
+</html>
