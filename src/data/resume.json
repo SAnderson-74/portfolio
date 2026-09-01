@@ -1,0 +1,177 @@
+{
+  "basics": {
+    "name": "Scott Anderson",
+    "label": "Cloud & Network Engineer",
+    "email": "scott@sanderson74.dev",
+    "url": "https://sanderson74.dev",
+    "summary": "Infrastructure-focused IT engineer with cloud monitoring experience and a self-built production homelab spanning virtualization, segmented networking, and containerized services. Comfortable owning a system end to end — design, deployment, and the debugging that comes after. Currently pursuing a B.S. in Information Technology at WGU.",
+    "location": {
+      "city": "Provo",
+      "region": "UT",
+      "countryCode": "US"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "SAnderson-74",
+        "url": "https://github.com/SAnderson-74"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "scott-anderson-a974b82a2",
+        "url": "https://www.linkedin.com/in/scott-anderson-a974b82a2"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "The Church of Jesus Christ of Latter-day Saints",
+      "position": "Cloud Engineering Intern, Monitoring Team",
+      "startDate": "2026-01",
+      "endDate": "2026-05",
+      "summary": "Embedded with the monitoring team supporting enterprise services and systems.",
+      "highlights": [
+        "Managed monitoring coverage for production services and server infrastructure using Dynatrace and Splunk, working alongside the cloud engineering team",
+        "Supported decommissioning of legacy software and end-of-life servers, including dependency review and removal of stale monitoring configuration",
+        "Partnered with development teams to onboard new services and servers into Dynatrace and Splunk, defining what to instrument and which conditions warranted alerting"
+      ]
+    },
+    {
+      "name": "Marvellous Catering",
+      "position": "Service Crew",
+      "startDate": "2025-08",
+      "endDate": null,
+      "summary": "Event operations while attending school full time.",
+      "highlights": [
+        "Execute setup, service, and breakdown for high-volume events under fixed deadlines with no margin for rework",
+        "Coordinate directly with clients and crew in fast-moving environments where problems must be solved in the moment"
+      ]
+    },
+    {
+      "name": "Self-Employed",
+      "position": "Computer Technician & Hardware Reseller",
+      "startDate": "2021-06",
+      "endDate": null,
+      "summary": "Independent business acquiring, repairing, and reselling computer, server, and AV hardware.",
+      "highlights": [
+        "Diagnose, repair, and refurbish laptops, desktops, servers, and audio equipment at the component level, including power supply, storage, and board-level faults",
+        "Evaluate hardware condition and market value to price inventory across KSL Classifieds, Facebook Marketplace, and eBay",
+        "Maintain 1–3 week turnaround from acquisition to sale while sustaining strong customer ratings",
+        "Guide customers through hardware and software troubleshooting in clear, non-technical language"
+      ]
+    },
+    {
+      "name": "Walt Disney World",
+      "position": "Food & Beverage Cast Member",
+      "startDate": "2025-01",
+      "endDate": "2025-05",
+      "summary": "Disney College Program placement in high-volume restaurant operations.",
+      "highlights": [
+        "Delivered guest service in a high-volume restaurant, consistently recognized for quality of guest interactions",
+        "Coordinated with a team of 20+ cast members to sustain rapid table turnover during peak service"
+      ]
+    },
+    {
+      "name": "Specialized Manufacturing",
+      "position": "Cable Assembler",
+      "startDate": "2023-12",
+      "endDate": "2024-08",
+      "summary": "Industrial cable assembly on a 40-person production team.",
+      "highlights": [
+        "Assembled and terminated thousands of custom industrial cables to client specification while meeting daily production quotas",
+        "Worked with quality control to verify assemblies met client specifications and industry standards"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Western Governors University",
+      "area": "Information Technology",
+      "studyType": "B.S.",
+      "startDate": "2026-09",
+      "endDate": "2030-08",
+      "courses": []
+    },
+    {
+      "institution": "Utah Valley University",
+      "area": "Information Technology",
+      "studyType": "Coursework",
+      "startDate": "2024-01",
+      "endDate": "2026-12",
+      "courses": []
+    }
+  ],
+  "certificates": [
+    {
+      "name": "CompTIA A+",
+      "date": "2025-01",
+      "issuer": "CompTIA"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Networking",
+      "level": "Intermediate",
+      "keywords": [
+        "pfSense",
+        "VLAN segmentation (802.1Q)",
+        "Firewall rule design",
+        "DNS / DHCP",
+        "mDNS & multicast routing",
+        "IGMP snooping",
+        "Tailscale / WireGuard",
+        "Managed switching (Dell N-series)",
+        "Enterprise Wi-Fi (Cisco)"
+      ]
+    },
+    {
+      "name": "Systems & Infrastructure",
+      "level": "Intermediate",
+      "keywords": [
+        "Linux administration",
+        "Windows administration",
+        "TrueNAS SCALE",
+        "ZFS pool design",
+        "Docker & Compose",
+        "Dell PowerEdge / iDRAC",
+        "GPU passthrough",
+        "Storage architecture"
+      ]
+    },
+    {
+      "name": "Monitoring & Observability",
+      "level": "Beginner",
+      "keywords": [
+        "Dynatrace",
+        "Splunk",
+        "Service and host monitoring",
+        "Alert threshold design",
+        "Legacy system decommissioning",
+        "Developer onboarding to monitoring"
+      ]
+    },
+    {
+      "name": "Automation & Tooling",
+      "level": "Intermediate",
+      "keywords": [
+        "Home Assistant",
+        "ESPHome",
+        "YAML configuration",
+        "MQTT",
+        "Git",
+        "Bash"
+      ]
+    },
+    {
+      "name": "Hardware",
+      "level": "Advanced",
+      "keywords": [
+        "Component-level diagnostics",
+        "Server hardware",
+        "Board-level repair",
+        "Cable assembly & termination",
+        "AV systems integration"
+      ]
+    }
+  ]
+}
