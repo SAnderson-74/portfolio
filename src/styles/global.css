@@ -56,6 +56,16 @@
   }
 }
 
+/* Wide displays: the page grows and the rail widens, rather than leaving a
+   narrow ribbon of content stranded in the middle of a large screen. */
+@media (min-width: 80rem) {
+  :root {
+    --page-max: 74rem;
+    --rail-width: 12rem;
+    --rail-gap: 3.5rem;
+  }
+}
+
 /* ==========================================================================
    Reset
    ========================================================================== */
@@ -213,10 +223,28 @@ pre code {
   .rail__label {
     text-align: right;
     padding-top: 0.35em;
+    /* align-self is what gives sticky room to work inside a grid cell.
+       Without it the item stretches to the full row height and never moves. */
+    align-self: start;
+    position: sticky;
+    top: var(--space-6);
   }
 }
 
-/* A horizontal rule that separates sections without shouting. */
+/* Two columns for sections whose entries are short. Prose-heavy sections
+   stay single-column, because long measures hurt readability. */
+.cols {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-12);
+  }
+}
+
 .divider {
   border: 0;
   border-top: 1px solid var(--rule);
@@ -227,7 +255,59 @@ pre code {
    Motion
    ========================================================================== */
 
+/* Page transitions. Chromium 126+ and Safari 18.2+ honour this; every other
+   browser performs an ordinary navigation and loses nothing. */
+@view-transition {
+  navigation: auto;
+}
+
+.masthead {
+  view-transition-name: masthead;
+}
+
+main {
+  view-transition-name: main-content;
+}
+
+::view-transition-old(main-content) {
+  animation: fade-out 160ms ease both;
+}
+
+::view-transition-new(main-content) {
+  animation: rise-in 280ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* The page-load moment: rules draw, rows resolve behind them. */
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes row-resolve {
+  from {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+
   *,
   *::before,
   *::after {

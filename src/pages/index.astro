@@ -8,7 +8,7 @@ const { basics, work, education, skills, certificates } = resume;
 const featured = (await getCollection("projects", ({ data }) => !data.draft))
   .filter((p) => p.data.featured)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, 4);
 
 function formatDate(d: string | null): string {
   if (d === null) return "Present";
@@ -23,7 +23,7 @@ function formatDate(d: string | null): string {
 const current = work.find((job) => job.endDate === null);
 const study = education[0];
 
-// The spec block: the five things a reader needs in the first ten seconds.
+// The spec block: what a reader needs in the first ten seconds.
 const spec = [
   { key: "Role", value: basics.label },
   { key: "Based", value: `${basics.location.city}, ${basics.location.region}` },
@@ -38,8 +38,8 @@ const spec = [
     <h1>{basics.name}</h1>
     <dl class="spec">
       {
-        spec.map((row) => (
-          <div class="spec__row">
+        spec.map((row, i) => (
+          <div class="spec__row" style={`--i: ${i}`}>
             <dt>{row.key}</dt>
             <dd>{row.value}</dd>
           </div>
@@ -56,19 +56,21 @@ const spec = [
       <section class="rail">
         <h2 class="rail__label">Selected work</h2>
         <div>
-          {featured.map((project) => (
-            <article class="entry">
-              <h3>
-                <a href={`/projects/${project.id}/`}>{project.data.title}</a>
-              </h3>
-              <p class="measure">{project.data.summary}</p>
-              <ul class="tags">
-                {project.data.stack.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
+          <div class="cols">
+            {featured.map((project) => (
+              <article class="entry">
+                <h3>
+                  <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+                </h3>
+                <p>{project.data.summary}</p>
+                <ul class="tags">
+                  {project.data.stack.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
           <p class="more">
             <a href="/projects/">All projects</a>
           </p>
@@ -81,7 +83,7 @@ const spec = [
 
   <section class="rail">
     <h2 class="rail__label">Experience</h2>
-    <div>
+    <div class="stack">
       {
         work.map((job) => (
           <article class="entry">
@@ -107,7 +109,7 @@ const spec = [
 
   <section class="rail">
     <h2 class="rail__label">Skills</h2>
-    <div>
+    <div class="cols">
       {
         skills.map((group) => (
           <article class="entry">
@@ -127,7 +129,7 @@ const spec = [
 
   <section class="rail">
     <h2 class="rail__label">Education</h2>
-    <div>
+    <div class="cols">
       {
         education.map((school) => (
           <article class="entry">
@@ -150,22 +152,47 @@ const spec = [
 <style>
   .intro h1 {
     font-size: var(--text-3xl);
+    animation: row-resolve 320ms ease both;
   }
 
   /* The spec block. Hairline rules do the structural work — no boxes,
      no cards, just a table that reads like a datasheet header. */
   .spec {
     margin-top: var(--space-8);
+    max-width: 46rem;
     border-top: 1px solid var(--rule);
-    max-width: 42rem;
+  }
+
+  @media (min-width: 80rem) {
+    .spec {
+      max-width: 56rem;
+    }
   }
 
   .spec__row {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr;
     gap: 0 var(--space-6);
     padding-block: var(--space-3);
-    border-bottom: 1px solid var(--rule);
+    /* Rows resolve after their rule has drawn. --i is set per row in the
+       template, so one rule handles the whole stagger. */
+    animation: row-resolve 300ms ease both;
+    animation-delay: calc(180ms + var(--i) * 70ms);
+  }
+
+  /* The rule is a pseudo-element rather than a border so it can be scaled
+     from zero width — borders cannot be animated this way. */
+  .spec__row::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rule);
+    transform-origin: left;
+    animation: rule-draw 420ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 70ms);
   }
 
   @media (min-width: 40rem) {
@@ -191,9 +218,11 @@ const spec = [
     font-size: var(--text-md);
     line-height: 1.55;
     color: var(--ink-soft);
+    animation: row-resolve 400ms ease both;
+    animation-delay: 560ms;
   }
 
-  .entry + .entry {
+  .stack .entry + .entry {
     margin-top: var(--space-8);
   }
 
@@ -207,12 +236,16 @@ const spec = [
     text-decoration-color: currentColor;
   }
 
+  .entry > p {
+    margin-top: var(--space-2);
+    color: var(--ink-soft);
+  }
+
   .entry__meta {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     gap: var(--space-2) var(--space-4);
-    margin-top: var(--space-1);
     font-family: var(--font-display);
     font-size: var(--text-sm);
   }
