@@ -2,9 +2,14 @@
    Design tokens
    Palette derived from T568B pair colors. Blue carries accent work;
    orange marks one thing only — what is current.
+
+   Light is the default. The dark block below overrides the same names, so
+   nothing else in this file (or any component) needs to know a theme exists.
    ========================================================================== */
 
 :root {
+  color-scheme: light;
+
   /* Color */
   --paper: #eff2f3;
   --paper-raised: #f8fafa;
@@ -48,6 +53,24 @@
   --measure: 34rem;
   --page-max: 58rem;
   --page-pad: 1.5rem;
+}
+
+/* Dark. Not black — the same blue-slate ink, inverted. Accent colors are
+   lightened because a saturated mid-blue that reads well on paper does not
+   carry enough contrast against a dark ground. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #0e1a21;
+  --paper-raised: #15242c;
+  --ink: #dde7eb;
+  --ink-soft: #a3b5bd;
+  --ink-faint: #7d939e;
+  --rule: #25383f;
+  --rule-strong: #3d555f;
+  --signal: #6daeea;
+  --signal-deep: #9ccbf5;
+  --live: #e4933f;
 }
 
 @media (min-width: 60rem) {

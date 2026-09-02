@@ -1,0 +1,26 @@
+# Everything listed here is excluded from the build context — the set of
+# files Docker uploads to the daemon before building.
+
+# Critical. node_modules on your Mac contains arm64 native binaries that
+# would be useless (and actively broken) inside a linux/amd64 image. The
+# build runs npm ci to install the correct ones. It is also the largest
+# directory in the project by far.
+node_modules
+
+# Built on the host. The image builds its own inside the container.
+dist
+.astro
+
+.git
+.gitignore
+.DS_Store
+*.log
+npm-debug.log*
+
+# Never let secrets into an image. Anyone who pulls it can read every layer.
+.env
+.env.*
+
+Dockerfile
+.dockerignore
+README.md

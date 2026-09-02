@@ -1,0 +1,37 @@
+# Port 8080, not 80. Ports below 1024 need elevated privileges to bind, and
+# this container runs with all Linux capabilities dropped. 8080 sidesteps
+# that entirely. Cloudflare Tunnel connects to this port in Phase 3.
+:8080 {
+	root * /srv
+	file_server
+
+	# Serve pre-compressed responses. Caddy picks the best encoding the
+	# browser advertises.
+	encode zstd gzip
+
+	header {
+		# Hashed asset filenames change whenever content changes, so these
+		# can be cached indefinitely and safely.
+		?Cache-Control "public, max-age=3600"
+
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+		Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'"
+
+		# Do not advertise the server software.
+		-Server
+	}
+
+	# Long cache for fingerprinted assets. Astro hashes these filenames, so a
+	# changed file gets a new name and the old cache entry becomes irrelevant.
+	@hashed path /_astro/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
+}
