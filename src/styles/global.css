@@ -107,8 +107,13 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Column layout on the body is what pins the footer to the bottom of the
+   viewport on short pages. main grows to fill whatever space is left over. */
 body {
   min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
@@ -210,6 +215,7 @@ pre code {
    ========================================================================== */
 
 .page {
+  width: 100%;
   max-width: var(--page-max);
   margin-inline: auto;
   padding-inline: var(--page-pad);
