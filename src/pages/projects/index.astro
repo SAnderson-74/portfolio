@@ -1,24 +1,76 @@
 ---
-import { getCollection } from 'astro:content';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Projects — Scott Anderson</title>
-  </head>
-  <body>
-    <h1>Projects</h1>
-    {projects.map((project) => (
-      <article>
-        <h2><a href={`/projects/${project.id}/`}>{project.data.title}</a></h2>
-        <p>{project.data.summary}</p>
-        <p>{project.data.stack.join(' · ')}</p>
-      </article>
-    ))}
-  </body>
-</html>
+<BaseLayout
+  title="Projects — Scott Anderson"
+  description="Infrastructure, networking, and hardware projects built and documented end to end."
+>
+  <section class="rail">
+    <h1 class="rail__label">Projects</h1>
+    <div>
+      {
+        projects.map((project) => (
+          <article class="entry">
+            <h2>
+              <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+            </h2>
+            <p class="measure">{project.data.summary}</p>
+            <ul class="tags">
+              {project.data.stack.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .entry + .entry {
+    margin-top: var(--space-12);
+  }
+
+  .entry h2 {
+    font-size: var(--text-md);
+  }
+
+  .entry h2 a {
+    color: var(--ink);
+    text-decoration-color: var(--rule-strong);
+  }
+
+  .entry h2 a:hover {
+    color: var(--signal);
+    text-decoration-color: currentColor;
+  }
+
+  .entry p {
+    margin-top: var(--space-2);
+    color: var(--ink-soft);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+
+  .tags li {
+    border-left: 1px solid var(--rule-strong);
+    padding-left: var(--space-3);
+  }
+</style>

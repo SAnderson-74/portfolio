@@ -1,38 +1,269 @@
 ---
-import { resume } from '../data/resume';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { resume } from "../data/resume";
 
-const { basics, work } = resume;
+const { basics, work, education, skills, certificates } = resume;
+
+const featured = (await getCollection("projects", ({ data }) => !data.draft))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
 
 function formatDate(d: string | null): string {
-  if (d === null) return 'Present';
-  const [year, month] = d.split('-');
+  if (d === null) return "Present";
+  const [year, month] = d.split("-");
   if (!month) return year;
-  const name = new Date(Number(year), Number(month) - 1).toLocaleString('en-US', { month: 'short' });
+  const name = new Date(Number(year), Number(month) - 1).toLocaleString("en-US", {
+    month: "short",
+  });
   return `${name} ${year}`;
 }
+
+const current = work.find((job) => job.endDate === null);
+const study = education[0];
+
+// The spec block: the five things a reader needs in the first ten seconds.
+const spec = [
+  { key: "Role", value: basics.label },
+  { key: "Based", value: `${basics.location.city}, ${basics.location.region}` },
+  { key: "Studying", value: `${study.studyType} ${study.area}, ${study.institution}` },
+  { key: "Currently", value: current ? `${current.position}, ${current.name}` : "—" },
+  { key: "Certified", value: certificates.map((c) => c.name).join(", ") || "—" },
+];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{basics.name} — {basics.label}</title>
-    <meta name="description" content={basics.summary} />
-  </head>
-  <body>
+<BaseLayout title={`${basics.name} — ${basics.label}`} description={basics.summary}>
+  <section class="intro">
     <h1>{basics.name}</h1>
-    <p>{basics.label}</p>
-    <p>{basics.summary}</p>
+    <dl class="spec">
+      {
+        spec.map((row) => (
+          <div class="spec__row">
+            <dt>{row.key}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="summary measure">{basics.summary}</p>
+  </section>
 
-    <h2>Experience</h2>
-    {work.map((job) => (
-      <article>
-        <h3>{job.position}</h3>
-        <p>{job.name} · {formatDate(job.startDate)} – {formatDate(job.endDate)}</p>
-        <ul>
-          {job.highlights.map((h) => <li>{h}</li>)}
-        </ul>
-      </article>
-    ))}
-  </body>
-</html>
+  <hr class="divider" />
+
+  {
+    featured.length > 0 && (
+      <section class="rail">
+        <h2 class="rail__label">Selected work</h2>
+        <div>
+          {featured.map((project) => (
+            <article class="entry">
+              <h3>
+                <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+              </h3>
+              <p class="measure">{project.data.summary}</p>
+              <ul class="tags">
+                {project.data.stack.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+          <p class="more">
+            <a href="/projects/">All projects</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  <hr class="divider" />
+
+  <section class="rail">
+    <h2 class="rail__label">Experience</h2>
+    <div>
+      {
+        work.map((job) => (
+          <article class="entry">
+            <h3>{job.position}</h3>
+            <p class="entry__meta">
+              <span class="entry__org">{job.name}</span>
+              <span class:list={["entry__dates", { "is-live": job.endDate === null }]}>
+                {formatDate(job.startDate)} – {formatDate(job.endDate)}
+              </span>
+            </p>
+            <ul class="highlights measure">
+              {job.highlights.map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="rail">
+    <h2 class="rail__label">Skills</h2>
+    <div>
+      {
+        skills.map((group) => (
+          <article class="entry">
+            <h3>{group.name}</h3>
+            <ul class="tags">
+              {group.keywords.map((keyword) => (
+                <li>{keyword}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="rail">
+    <h2 class="rail__label">Education</h2>
+    <div>
+      {
+        education.map((school) => (
+          <article class="entry">
+            <h3>{school.institution}</h3>
+            <p class="entry__meta">
+              <span class="entry__org">
+                {school.studyType} {school.area}
+              </span>
+              <span class:list={["entry__dates", { "is-live": school.endDate === null }]}>
+                {formatDate(school.startDate)} – {formatDate(school.endDate)}
+              </span>
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro h1 {
+    font-size: var(--text-3xl);
+  }
+
+  /* The spec block. Hairline rules do the structural work — no boxes,
+     no cards, just a table that reads like a datasheet header. */
+  .spec {
+    margin-top: var(--space-8);
+    border-top: 1px solid var(--rule);
+    max-width: 42rem;
+  }
+
+  .spec__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 var(--space-6);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .spec__row {
+      grid-template-columns: 7rem minmax(0, 1fr);
+    }
+  }
+
+  .spec dt {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .spec dd {
+    margin: 0;
+  }
+
+  .summary {
+    margin-top: var(--space-8);
+    font-size: var(--text-md);
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .entry + .entry {
+    margin-top: var(--space-8);
+  }
+
+  .entry h3 a {
+    color: var(--ink);
+    text-decoration-color: var(--rule-strong);
+  }
+
+  .entry h3 a:hover {
+    color: var(--signal);
+    text-decoration-color: currentColor;
+  }
+
+  .entry__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-1);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+  }
+
+  .entry__org {
+    color: var(--ink-soft);
+  }
+
+  .entry__dates {
+    color: var(--ink-faint);
+  }
+
+  /* Orange appears here and nowhere else: this role is current. */
+  .entry__dates.is-live {
+    color: var(--live);
+  }
+
+  .highlights {
+    margin-top: var(--space-3);
+    padding-left: var(--space-4);
+  }
+
+  .highlights li {
+    margin-top: var(--space-2);
+    padding-left: var(--space-2);
+  }
+
+  .highlights li::marker {
+    color: var(--rule-strong);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+
+  .tags li {
+    border-left: 1px solid var(--rule-strong);
+    padding-left: var(--space-3);
+  }
+
+  .more {
+    margin-top: var(--space-8);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+  }
+</style>

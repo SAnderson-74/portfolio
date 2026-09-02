@@ -1,0 +1,239 @@
+/* ==========================================================================
+   Design tokens
+   Palette derived from T568B pair colors. Blue carries accent work;
+   orange marks one thing only — what is current.
+   ========================================================================== */
+
+:root {
+  /* Color */
+  --paper: #eff2f3;
+  --paper-raised: #f8fafa;
+  --ink: #10222c;
+  --ink-soft: #4a5f6b;
+  --ink-faint: #7d919c;
+  --rule: #cbd5d9;
+  --rule-strong: #a8b8bf;
+  --signal: #0f5ca8;
+  --signal-deep: #0a3f75;
+  --live: #c96a0f;
+
+  /* Type families */
+  --font-display: "Archivo Variable", system-ui, sans-serif;
+  --font-body: "Source Serif 4 Variable", Georgia, serif;
+
+  /* Type scale — ratio ~1.26 from a 17px base */
+  --text-xs: 0.75rem;
+  --text-sm: 0.85rem;
+  --text-base: 1.0625rem;
+  --text-md: 1.34rem;
+  --text-lg: 1.69rem;
+  --text-xl: 2.13rem;
+  --text-2xl: 2.68rem;
+  --text-3xl: 3.38rem;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Layout */
+  --rail-width: 9rem;
+  --rail-gap: 2.5rem;
+  --measure: 34rem;
+  --page-max: 58rem;
+  --page-pad: 1.5rem;
+}
+
+@media (min-width: 60rem) {
+  :root {
+    --page-pad: 3rem;
+  }
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: var(--text-lg);
+}
+
+h3 {
+  font-size: var(--text-md);
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+p + p {
+  margin-top: var(--space-4);
+}
+
+a {
+  color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: color 120ms ease;
+}
+
+a:hover {
+  color: var(--signal-deep);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  padding: 0.1em 0.35em;
+}
+
+pre {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--rule-strong);
+  padding: var(--space-4);
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
+.page {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+/* The label rail: metadata left, content right. Single column on narrow
+   screens, where the label sits above its content instead of beside it. */
+.rail {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 52rem) {
+  .rail {
+    grid-template-columns: var(--rail-width) minmax(0, 1fr);
+    gap: var(--rail-gap);
+  }
+}
+
+.rail__label {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--ink-faint);
+  line-height: 1.4;
+}
+
+@media (min-width: 52rem) {
+  .rail__label {
+    text-align: right;
+    padding-top: 0.35em;
+  }
+}
+
+/* A horizontal rule that separates sections without shouting. */
+.divider {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin-block: var(--space-12);
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,33 +1,139 @@
 ---
-import { getCollection, render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  const projects = await getCollection("projects", ({ data }) => !data.draft);
   return projects.map((project) => ({
     params: { id: project.id },
     props: { project },
   }));
 }
 
-type Props = { project: CollectionEntry<'projects'> };
+type Props = { project: CollectionEntry<"projects"> };
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+const written = project.data.date.toLocaleDateString("en-US", {
+  month: "long",
+  year: "numeric",
+});
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{project.data.title} — Scott Anderson</title>
-    <meta name="description" content={project.data.summary} />
-  </head>
-  <body>
-    <a href="/projects/">← Projects</a>
-    <h1>{project.data.title}</h1>
-    <p>{project.data.stack.join(' · ')}</p>
-    <Content />
-    <a href="/projects/">← Projects</a>
-  </body>
-</html>
+<BaseLayout title={`${project.data.title} — Scott Anderson`} description={project.data.summary}>
+  <article>
+    <header class="rail head">
+      <p class="rail__label">{written}</p>
+      <div>
+        <h1>{project.data.title}</h1>
+        <p class="lede measure">{project.data.summary}</p>
+        <ul class="tags">
+          {project.data.stack.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </header>
+
+    <div class="rail">
+      <p class="rail__label" aria-hidden="true"></p>
+      <div class="prose measure">
+        <Content />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .head {
+    margin-bottom: var(--space-12);
+  }
+
+  .head h1 {
+    font-size: var(--text-xl);
+  }
+
+  .lede {
+    margin-top: var(--space-4);
+    font-size: var(--text-md);
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+
+  .tags li {
+    border-left: 1px solid var(--rule-strong);
+    padding-left: var(--space-3);
+  }
+
+  /* Markdown output does not carry Astro's scope attribute, so these
+     selectors have to be marked :global to reach it. They stay contained
+     because .prose is scoped and only exists on this page. */
+  .prose :global(h2) {
+    font-size: var(--text-lg);
+    margin-top: var(--space-12);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--rule);
+  }
+
+  .prose :global(h3) {
+    font-size: var(--text-md);
+    margin-top: var(--space-8);
+  }
+
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-top: var(--space-4);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: var(--space-6);
+  }
+
+  .prose :global(li) {
+    margin-top: var(--space-2);
+  }
+
+  .prose :global(li::marker) {
+    color: var(--rule-strong);
+  }
+
+  .prose :global(strong) {
+    font-weight: 650;
+  }
+
+  .prose :global(table) {
+    width: 100%;
+    margin-top: var(--space-6);
+    border-collapse: collapse;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+  }
+
+  .prose :global(th) {
+    text-align: left;
+    font-weight: 600;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--rule-strong);
+    padding: var(--space-2) var(--space-4) var(--space-2) 0;
+  }
+
+  .prose :global(td) {
+    border-bottom: 1px solid var(--rule);
+    padding: var(--space-2) var(--space-4) var(--space-2) 0;
+    vertical-align: top;
+  }
+</style>
